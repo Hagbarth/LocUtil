@@ -18,6 +18,7 @@ public class FingerPrintingNN {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+<<<<<<< HEAD
 		
 		double[][] positions = {{13.0, 13.0, 0.0, 0.0}, {14.0, 14.0, 0.0, 0.0}}; 
 		
@@ -83,5 +84,8 @@ public class FingerPrintingNN {
 			e.printStackTrace();
 		}
 		*/
+=======
+		FingerPrintingKNN fpKNN = new FingerPrintingKNN(1);
+>>>>>>> 3790f7badd3adb136196f55fd0feb3e417102330
 	}
 }
