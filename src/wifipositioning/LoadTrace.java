@@ -1,3 +1,12 @@
+/**
+*
+* Used to load traces in the KNN and NN Algorithms
+*
+* @author Fluo (Søren Lundtof, Laurits Langberg and Emil Rasmussen)
+* @version 1.0.1
+* 
+*/
+
 package wifipositioning;
 
 import java.io.File;

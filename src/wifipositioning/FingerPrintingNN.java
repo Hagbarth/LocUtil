@@ -1,3 +1,12 @@
+/**
+*
+* Usage of the K Nearest Neigbor alogrithm to find the Nearest Neighbor
+*
+* @author Fluo (Søren Lundtof, Laurits Langberg and Emil Rasmussen)
+* @version 1.0.1
+* 
+*/
+
 package wifipositioning;
 
 import java.io.File;
