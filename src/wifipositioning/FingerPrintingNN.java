@@ -8,6 +8,7 @@
 */
 
 package wifipositioning;
+package wifipositioningM
 
 import java.io.File;
 import java.io.FileWriter;
@@ -57,6 +58,7 @@ public class FingerPrintingNN {
 			
 			//Iterate the trace generated from the online file
 			List<TraceEntry> onlineTrace = tg.getOnline();			
+			List<TraceEntry> onlineTrace = tg.getOnline();	
 			for(TraceEntry entry: onlineTrace) {
 				//Print out coordinates for the collection point and the number of signal strength samples
 				System.out.println(entry.getGeoPosition().toString() + " - " + entry.getSignalStrengthSamples().size());
