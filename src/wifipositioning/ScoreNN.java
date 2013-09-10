@@ -92,7 +92,7 @@ class ScoreNN {
 			i++;
 		}
 
-		Collections.sort(values, new ValueComparator());
+		Collections.sort(values, new ScoreComparator());
 		//System.out.println(values.toString());
 		double allValues = values.size();
 		i = 1;
@@ -144,7 +144,7 @@ class ScoreNN {
 }
 
 //Comparator to compare the values
-class ValueComparator implements Comparator<Double> {
+class ScoreComparator implements Comparator<Double> {
 
     @Override
     public int compare(Double a, Double b) {
