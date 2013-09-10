@@ -1,6 +1,6 @@
 /**
 *
-* Implementatidasason of the K Nearest Neighbors Algorithm
+* Implementation of the K Nearest Neighbors Algorithm
 *
 * @author Fluo (Søren Lundtof, Laurits Langberg and Emil Rasmussen)
 * @version 1.0.1

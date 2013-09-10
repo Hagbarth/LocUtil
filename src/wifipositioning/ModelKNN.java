@@ -32,6 +32,8 @@ class ModelKNN {
 		
 		kNN.doKNN();
 
+		int k = Integer.getInteger(args[0]);
+		ModelKNN knn = new ModelKNN(k);
 	}
 
 	public ModelKNN(int k){
@@ -60,7 +62,7 @@ class ModelKNN {
 		HashMap<MACAddress, Double> macAddressDistMap = new HashMap<MACAddress, Double>();
 		
 		//Instantiation of comarator and value to compare
-		ValueComparator comparator =  new ValueComparator(macAddressDistMap);
+		ValueComparatorModel comparator =  new ValueComparatorModel(macAddressDistMap);
 		TreeMap<MACAddress, Double> macAddressDistMapSorted = new TreeMap<MACAddress, Double>(comparator);
 		
 		List<TraceEntry> offlineTrace = trace.getOffline();
@@ -131,10 +133,10 @@ class ModelKNN {
 }
 
 //Comparator to compare the values in signal strength
-class ValueComparator implements Comparator<MACAddress> {
+class ValueComparatorModel implements Comparator<MACAddress> {
 
     Map<MACAddress, Double> base;
-    public ValueComparator(Map<MACAddress, Double> base) {
+    public ValueComparatorModel(Map<MACAddress, Double> base) {
         this.base = base;
     }
 
