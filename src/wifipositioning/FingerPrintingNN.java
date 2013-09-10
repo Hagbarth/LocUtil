@@ -18,5 +18,6 @@ public class FingerPrintingNN {
 	 */
 	public static void main(String[] args) {
 		FingerPrintingKNN knn = new FingerPrintingKNN(1);
+		knn.printKNNToFile();
 	}
 }

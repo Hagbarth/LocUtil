@@ -25,6 +25,7 @@ class FingerPrintingKNN {
 
 	private TraceGenerator trace;
 	private Map<TraceEntry, Double> distList;
+	private int offlineSize, onlineSize, k;
 
 	public static void main(String[] args) {
 		
@@ -33,14 +34,19 @@ class FingerPrintingKNN {
 
 		//Instantiating a FingerPringingKNN object with k
 		FingerPrintingKNN fingerPrintingKNN = new FingerPrintingKNN(k);
+		fingerPrintingKNN.printKNNToFile();
 	}
 
 	//Constructor
 	public FingerPrintingKNN(int k){
-
 		//Setting the size for the stracks
-		int offlineSize = 25;
-		int onlineSize = 5;
+		offlineSize = 25;
+		onlineSize = 5;
+		this.k = k;
+	}
+
+	public String doKNN(){
+		String returnString = "";
 
 		//Load the trace from files and the TraceGenerator
 		LoadTrace traceLoader = new LoadTrace(offlineSize, onlineSize);
@@ -113,11 +119,39 @@ class FingerPrintingKNN {
 		    estimateZ = estimateZ/k;
 			GeoPosition estimatePos = new GeoPosition(estimateX, estimateY, estimateZ);
 
-			//Print the results
-			System.out.println("True: " + truePos.toString() + " - Estimate: " + estimatePos.toString());
-
+			//Return the results
+			returnString += "True: " + truePos.toString() + " - Estimate: " + estimatePos.toString() + "\n";
 		}
 
+		return returnString;
+	}
+
+	public void printKNNToFile(){
+		try {
+			 
+			String content = this.doKNN();
+ 
+			File file = new File("../output/fingerPrinting" + k + "NN.txt");
+			File dir = new File("../output");
+		    if (!dir.exists() && !dir.mkdirs()) {
+		        throw new IOException("Unable to create " + dir.getAbsolutePath());
+		    }
+ 
+			// if file doesn't exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+ 
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(content);
+			bw.close();
+ 
+			System.out.println("Done");
+ 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
 

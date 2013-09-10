@@ -33,7 +33,7 @@ class LoadTrace {
 	public TraceGenerator getTrace() {
 		
 		//Path to the trace files
-		String offlinePath = "data/MU.1.5meters.offline.trace", onlinePath = "data/MU.1.5meters.online.trace";
+		String offlinePath = "../data/MU.1.5meters.offline.trace", onlinePath = "../data/MU.1.5meters.online.trace";
 		
 		try{
 
