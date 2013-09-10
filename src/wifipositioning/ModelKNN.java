@@ -1,4 +1,4 @@
-class ModelKNN{
+class ModelKNN {
 	private int k;
 
 	public static void main(String[] args) {
