@@ -2,7 +2,7 @@ class ModelKNN {
 	private int k;
 
 	public static void main(String[] args) {
-		int k = args[0];
+		int k = Integer.getInteger(args[0]);
 		ModelKNN knn = new ModelKNN(k);
 	}
 
@@ -12,6 +12,7 @@ class ModelKNN {
 
 	public String doKNN(){
 		//TODO implement modelKNN algorithm and return results in a string
+		return null;
 	}
 
 	public void printKnnToFile(){
