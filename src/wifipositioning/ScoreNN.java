@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.*;
 import java.util.regex.*;
+import java.math.BigDecimal;
 
 class ScoreNN {
 	private String filename;
@@ -99,8 +100,9 @@ class ScoreNN {
 		for (double value : values) {
 			double valuesCloser = allValues - i;
 			if (valuesCloser > 0) {
-				double percentCloser = valuesCloser / allValues * 100;
-				content += Double.toString(percentCloser) + "\n";
+				double percentCloser = round(valuesCloser / allValues * 100, 2, BigDecimal.ROUND_HALF_UP);
+				value = round(value, 2 , BigDecimal.ROUND_HALF_UP);
+				content += i + ": Distance(" + value + "), Percent Closer(" + percentCloser + ")\n";
 			}
 			else {
 				content += "0\n";
@@ -140,6 +142,12 @@ class ScoreNN {
 			doublePos.add(dPos);
 		}
 		list.add(doublePos);
+	}
+
+	private double round(double unrounded, int precision, int roundingMode){
+	    BigDecimal bd = new BigDecimal(unrounded);
+	    BigDecimal rounded = bd.setScale(precision, roundingMode);
+	    return rounded.doubleValue();
 	}
 }
 
