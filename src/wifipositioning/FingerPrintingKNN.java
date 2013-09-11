@@ -74,6 +74,10 @@ class FingerPrintingKNN {
 			ss2 = onTE.getSignalStrengthSamples().getAverageSignalStrength(ap.get(1));
 			ss3 = onTE.getSignalStrengthSamples().getAverageSignalStrength(ap.get(2));
 			
+			System.out.println("SS1: "+ss1);
+			System.out.println("SS2: "+ss2);
+			System.out.println("SS3: "+ss3);
+
 			for(TraceEntry offTE : offlineTrace) {
 				if(offTE.getSignalStrengthSamples().keySet().containsAll(ap)){
 					//Get nearest 3 acess ponts for offline
