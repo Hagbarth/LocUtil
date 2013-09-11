@@ -40,7 +40,7 @@ class ModelKNN {
 		this.k = k;
 		this.pD0 = -33.77;
 		this.n = 3.415;
-		this.d0 = 1.00;
+		this.d0 = 1;
 	}
 
 	public ModelKNN(int k, double pD0, double n, double d0){
