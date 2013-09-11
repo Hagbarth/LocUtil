@@ -24,9 +24,9 @@ class CSVGenerator {
     		if (method.equals("ssd")){
     			gen.makeFile("ssd", gen.signalStrengthForDistance());
     		} else if (method.equals("cef")) {
-
+    			gen.makeFile("cef", gen.cumulativeErrorFunction());
     		} else if (method.equals("vma")) {
-
+    			gen.makeFile("vma", gen.valuesMedianAccuracy());
     		} else {
     			System.out.println("This program takes one parameter: Type of function, which can be one of three:\nssd: Signalstrength for distance to AP\ncef: cumulative error function\nvma: relate different values of K to median accuracy");
     		}
@@ -73,6 +73,19 @@ class CSVGenerator {
 		}
 		return returnString;
     }
+
+    public String cumulativeErrorFunction(){
+    	String returnString = "";
+
+		return returnString;
+    }
+
+    public String valuesMedianAccuracy(){
+    	String returnString = "";
+    	
+		return returnString;
+    }
+
 
     public void makeFile(String name, String content){
     	try {
