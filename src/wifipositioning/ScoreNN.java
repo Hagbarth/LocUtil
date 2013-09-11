@@ -26,10 +26,17 @@ import java.util.regex.*;
 import java.math.BigDecimal;
 
 class ScoreNN {
+
+//================================================================================
+// Le Properties
+//================================================================================
 	private String filename;
 	private File fileInput;
 	private ArrayList<ArrayList> trues, estimates;
 
+//================================================================================
+// Le Main
+//================================================================================
 	public static void main(String[] args) {
 		try {
 			ScoreNN scoreNN = new ScoreNN(args[0]);
@@ -42,6 +49,9 @@ class ScoreNN {
 		
 	}
 
+//================================================================================
+// Le Constructors
+//================================================================================
 	public ScoreNN(String filename){
 		this.filename = filename;
 		fileInput = new File("../output/" + filename);
@@ -49,11 +59,22 @@ class ScoreNN {
 		estimates = new ArrayList<ArrayList>();
 	}
 
+//================================================================================
+// Le Math Methods
+//================================================================================
 	public double getDistance(double x1, double x2, double y1, double y2, double z1, double z2){
         return Math.sqrt(Math.pow(x1 - x2,2) + Math.pow(y1 - y2,2) + Math.pow(z1 - z2, 2));	
 	}
 
+	private double round(double unrounded, int precision, int roundingMode){
+	    BigDecimal bd = new BigDecimal(unrounded);
+	    BigDecimal rounded = bd.setScale(precision, roundingMode);
+	    return rounded.doubleValue();
+	}
 
+//================================================================================
+// Le IO Methods
+//================================================================================
 	public void readFile(){
 		String sCurrentLine;
 		boolean trueLine = true;
@@ -98,9 +119,9 @@ class ScoreNN {
 		double allValues = values.size();
 		i = 1;
 		for (double value : values) {
-			double valuesCloser = allValues - i;
-			if (valuesCloser > 0) {
-				double percentCloser = round(valuesCloser / allValues * 100, 2, BigDecimal.ROUND_HALF_UP);
+			double valuesCloserOrEqual = allValues - i;
+			if (valuesCloserOrEqual > 0) {
+				double percentCloser = round(valuesCloserOrEqual / allValues * 100, 2, BigDecimal.ROUND_HALF_UP);
 				value = round(value, 2 , BigDecimal.ROUND_HALF_UP);
 				content += i + ": Distance(" + value + "), Percent Closer(" + percentCloser + ")\n";
 			}
@@ -134,6 +155,9 @@ class ScoreNN {
 		}
 	}
 
+//================================================================================
+// Le Random Private Methods
+//================================================================================
 	private void pushPositionToArrayList(String trace, ArrayList<ArrayList> list){
 		String[] stringPos = trace.split(",");
 		ArrayList<Double> doublePos = new ArrayList<Double>();
@@ -143,15 +167,11 @@ class ScoreNN {
 		}
 		list.add(doublePos);
 	}
-
-	private double round(double unrounded, int precision, int roundingMode){
-	    BigDecimal bd = new BigDecimal(unrounded);
-	    BigDecimal rounded = bd.setScale(precision, roundingMode);
-	    return rounded.doubleValue();
-	}
 }
 
-//Comparator to compare the values
+//================================================================================
+// Le Comparator Class needed to compare stuff
+//================================================================================
 class ScoreComparator implements Comparator<Double> {
 
     @Override
