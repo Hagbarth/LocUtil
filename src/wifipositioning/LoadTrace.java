@@ -40,11 +40,9 @@ class LoadTrace {
 			//Construct parsers
 			File offlineFile = new File(offlinePath);
 			Parser offlineParser = new Parser(offlineFile);
-			System.out.println("Offline File: " +  offlineFile.getAbsoluteFile());
 			
 			File onlineFile = new File(onlinePath);
 			Parser onlineParser = new Parser(onlineFile);
-			System.out.println("Online File: " + onlineFile.getAbsoluteFile());
 
 			//Generate and return traces from parsed files
 			return new TraceGenerator(offlineParser, onlineParser,offlineSize,onlineSize);

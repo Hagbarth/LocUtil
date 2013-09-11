@@ -9,21 +9,12 @@
 
 package wifipositioning;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 import java.math.BigDecimal;
+
+import org.pi4.locutil.*;
 
 class ScoreNN {
 
@@ -32,12 +23,13 @@ class ScoreNN {
 //================================================================================
 	private String filename;
 	private File fileInput;
-	private ArrayList<ArrayList> trues, estimates;
+	private ArrayList<GeoPosition> trues, estimates;
 
 //================================================================================
 // Le Main
 //================================================================================
 	public static void main(String[] args) {
+		//Create new ScoreNN, read the file and write new file
 		try {
 			ScoreNN scoreNN = new ScoreNN(args[0]);
 			scoreNN.readFile();
@@ -55,17 +47,13 @@ class ScoreNN {
 	public ScoreNN(String filename){
 		this.filename = filename;
 		fileInput = new File("../output/" + filename);
-		trues = new ArrayList<ArrayList>();
-		estimates = new ArrayList<ArrayList>();
+		trues = new ArrayList<GeoPosition>();
+		estimates = new ArrayList<GeoPosition>();
 	}
 
 //================================================================================
 // Le Math Methods
 //================================================================================
-	public double getDistance(double x1, double x2, double y1, double y2, double z1, double z2){
-        return Math.sqrt(Math.pow(x1 - x2,2) + Math.pow(y1 - y2,2) + Math.pow(z1 - z2, 2));	
-	}
-
 	private double round(double unrounded, int precision, int roundingMode){
 	    BigDecimal bd = new BigDecimal(unrounded);
 	    BigDecimal rounded = bd.setScale(precision, roundingMode);
@@ -81,9 +69,14 @@ class ScoreNN {
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileInput));
+
+			//Find positions from txt file input
 			while ((sCurrentLine = br.readLine()) != null) {
 				Pattern pattern = Pattern.compile("\\((.*?)\\)");
 				Matcher matcher = pattern.matcher(sCurrentLine);
+
+				//If it is a true position push to trues array list
+				//If it is an estimate position push to estimates list
 				while (matcher.find()) {
 				    String trace = matcher.group(1);
 					if (trueLine) {
@@ -104,33 +97,45 @@ class ScoreNN {
 
 	public void writeFile(){
 		String content = "";
-		ArrayList<Double> values = new ArrayList<Double>();
-		int i = 0;
+		ArrayList<PositioningError> errorList = new ArrayList<PositioningError>();
 
-		for(ArrayList<Double> position : trues){
-			ArrayList<Double> estimate = estimates.get(i);
-			double value = getDistance(position.get(0), estimate.get(0), position.get(1), estimate.get(1), position.get(2), estimate.get(2));
-			values.add(value);
+		//Push positioning errors from the two array lists into a PositioningError Array list
+		int i = 0;
+		for (GeoPosition pos: trues) {
+			GeoPosition estimate = estimates.get(i);
+			PositioningError posErr = new PositioningError(pos, estimate);
+			errorList.add(posErr);
 			i++;
 		}
 
-		Collections.sort(values, new ScoreComparator());
-		//System.out.println(values.toString());
-		double allValues = values.size();
+		//Sort error list from high distance to low
+		Collections.sort(errorList);
+		Collections.reverse(errorList);	
+
+		double allErrors = errorList.size();
+		double posErrsCloserOrEqual = 0;
 		i = 1;
-		for (double value : values) {
-			double valuesCloserOrEqual = allValues - i;
-			if (valuesCloserOrEqual > 0) {
-				double percentCloser = round(valuesCloserOrEqual / allValues * 100, 2, BigDecimal.ROUND_HALF_UP);
-				value = round(value, 2 , BigDecimal.ROUND_HALF_UP);
-				content += i + ": Distance(" + value + "), Percent Closer(" + percentCloser + ")\n";
+		for (PositioningError posErr : errorList) {
+			//If it is not the first element in list, find out if previous element is th same distance and handle it accordingly.
+			if (i > 1) {
+				PositioningError prevErr = errorList.get(i-2);
+				posErrsCloserOrEqual = posErr.getPositioningError() == prevErr.getPositioningError() ? posErrsCloserOrEqual : allErrors - i;
+			} else {
+				posErrsCloserOrEqual = allErrors - i;
+			}
+
+			//Calculate percentages and push to output string
+			if (posErrsCloserOrEqual > 0) {
+				double percentCloser = round(posErrsCloserOrEqual / allErrors * 100, 2, BigDecimal.ROUND_HALF_UP);
+				content += i + ": Distance(" + posErr.getPositioningError() + "), Percent Closer or Equal(" + percentCloser + ")\n";
 			}
 			else {
-				content += "0\n";
+				content += i + ": Distance(" + posErr.getPositioningError() + "), Percent Closer or Equal(0)\n";
 			}
 			i++;
 		}		
 
+		//Create new txt file from output string
 		try { 
 			File file = new File("../output/scores/" + filename);
 			File dir = new File("../output/scores");
@@ -153,34 +158,32 @@ class ScoreNN {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 //================================================================================
 // Le Random Private Methods
 //================================================================================
-	private void pushPositionToArrayList(String trace, ArrayList<ArrayList> list){
+	private void pushPositionToArrayList(String trace, ArrayList<GeoPosition> list){
 		String[] stringPos = trace.split(",");
-		ArrayList<Double> doublePos = new ArrayList<Double>();
+		int i = 1;
+		GeoPosition geoPos = new GeoPosition(0.0, 0.0, 0.0);
+
+		//Convert string trace to a GeoPosition and add to array list
 		for (String pos : stringPos) {
 			double dPos = Double.parseDouble(pos);
-			doublePos.add(dPos);
+			switch(i){
+				case 1:
+					geoPos.setX(dPos);
+					break;
+				case 2:
+					geoPos.setY(dPos);
+					break;
+				case 3:
+					geoPos.setZ(dPos);
+			}
+			i++;
 		}
-		list.add(doublePos);
+		list.add(geoPos);
 	}
-}
-
-//================================================================================
-// Le Comparator Class needed to compare stuff
-//================================================================================
-class ScoreComparator implements Comparator<Double> {
-
-    @Override
-    public int compare(Double a, Double b) {
-        if(a < b){
-            return 1;
-        } else {
-            return -1;
-        }
-    }
-
 }

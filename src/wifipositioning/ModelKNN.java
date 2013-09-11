@@ -189,8 +189,7 @@ class ModelKNN {
 	}
 
 	//Get the GeoPosition of a given macAddress
-    public GeoPosition getAPPosistion(MACAddress macAddress)
-    {
+    public GeoPosition getAPPosistion(MACAddress macAddress){
         try{
         	BufferedReader br = new BufferedReader(new FileReader("../data/MU.AP.positions"));
         	String line;
