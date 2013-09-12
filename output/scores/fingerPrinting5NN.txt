@@ -1,0 +1,5 @@
+Distance(0.0), Percent Closer or Equal(0.0)
+Distance(4.546993539832086), Percent Closer or Equal(454.69935398320865)
+Distance(4.238539763149945), Percent Closer or Equal(423.85397631499455)
+Distance(4.241777010869475), Percent Closer or Equal(424.1777010869475)
+Distance(4.011072289117027), Percent Closer or Equal(401.1072289117027)

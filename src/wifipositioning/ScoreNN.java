@@ -11,6 +11,7 @@ package wifipositioning;
 
 import java.io.*;
 import java.util.*;
+import java.util.Map.*;
 import java.util.regex.*;
 import java.math.BigDecimal;
 
@@ -22,7 +23,9 @@ class ScoreNN {
 // Le Properties
 //================================================================================
 	private String filename;
+	private String type;
 	private File fileInput;
+	private int k;
 	private ArrayList<GeoPosition> trues, estimates;
 
 //================================================================================
@@ -31,12 +34,16 @@ class ScoreNN {
 	public static void main(String[] args) {
 		//Create new ScoreNN, read the file and write new file
 		try {
-			ScoreNN scoreNN = new ScoreNN(args[0]);
-			scoreNN.readFile();
-			scoreNN.writeFile();
+			if(args.length < 2) System.out.println("This program takes to parameters:\nType: 'fingerPrinting' or 'model'\nk: Any integer from 1 and up");
+			else if(!args[0].equals("fingerPrinting")) System.out.println("This program takes to parameters:\nType: 'fingerPrinting' or 'model'\nk: Any integer from 1 and up");
+			else {
+				ScoreNN scoreNN = new ScoreNN(args[0], Integer.parseInt(args[1]));
+				scoreNN.readFile();
+				scoreNN.writeFile();
+			}
 		}
 		catch ( ArrayIndexOutOfBoundsException e ) {
-		 	System.out.println("Du skal skrive filnavn som første argument");
+		 	System.out.println("This program takes to parameters:\nType: 'fingerPrinting' or 'model'\nk: Any integer from 1 and up");
 		}
 		
 	}
@@ -44,11 +51,20 @@ class ScoreNN {
 //================================================================================
 // Le Constructors
 //================================================================================
-	public ScoreNN(String filename){
-		this.filename = filename;
-		fileInput = new File("../output/" + filename);
+	public ScoreNN(String type, int k){
+		filename = type + k + "NN.txt";
+		this.type = type;
+		this.k = k;
+		this.fileInput = new File("../output/" + filename);
 		trues = new ArrayList<GeoPosition>();
 		estimates = new ArrayList<GeoPosition>();
+	}
+
+//================================================================================
+// Le Accessors
+//================================================================================
+	public File getFileInput(){
+		return fileInput;
 	}
 
 //================================================================================
@@ -64,6 +80,7 @@ class ScoreNN {
 // Le IO Methods
 //================================================================================
 	public void readFile(){
+		
 		String sCurrentLine;
 		boolean trueLine = true;
 
@@ -95,8 +112,8 @@ class ScoreNN {
 		}
 	}
 
-	public void writeFile(){
-		String content = "";
+	public HashMap<Double, Double> getErrorDistribution(){
+		HashMap<Double, Double> results = new HashMap<Double, Double>();
 		ArrayList<PositioningError> errorList = new ArrayList<PositioningError>();
 
 		//Push positioning errors from the two array lists into a PositioningError Array list
@@ -123,18 +140,27 @@ class ScoreNN {
 			} else {
 				posErrsCloserOrEqual = allErrors - i;
 			}
-
 			//Calculate percentages and push to output string
 			if (posErrsCloserOrEqual > 0) {
 				double percentCloser = round(posErrsCloserOrEqual / allErrors * 100, 2, BigDecimal.ROUND_HALF_UP);
-				content += i + ": Distance(" + posErr.getPositioningError() + "), Percent Closer or Equal(" + percentCloser + ")\n";
+				results.put(posErr.getPositioningError(), percentCloser);
 			}
 			else {
-				content += i + ": Distance(" + posErr.getPositioningError() + "), Percent Closer or Equal(0)\n";
+				results.put(posErr.getPositioningError(), (double) 0);
 			}
 			i++;
-		}		
+		}
 
+		return results;
+	}
+
+	public void writeFile(HashMap<Double, Double> errorDist){
+		String content = "";
+		
+		for (Entry<Double, Double> entry : errorDist.entrySet()) {
+			content += "Distance(" + entry.getKey() + "), Percent Closer or Equal(" + entry.getValue() + ")\n";
+		}	
+		
 		//Create new txt file from output string
 		try { 
 			File file = new File("../output/scores/" + filename);
@@ -153,12 +179,16 @@ class ScoreNN {
 			bw.write(content);
 			bw.close();
  
-			System.out.println("Done");
+			System.out.println("Score FileWrite Done");
  
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+	}
+
+	public void writeFile(){
+		writeFile(getErrorDistribution());
 	}
 
 //================================================================================
