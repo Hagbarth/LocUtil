@@ -29,16 +29,15 @@ class CSVGenerator {
     		} else if (method.equals("vmafinger")) {
     			gen.makeFile("vma_fingerprint", gen.valuesMedianAccuracyAndCumulativeErrorFunction("fingerprinting"));
     		} else {
-    			System.out.println("This program takes one parameter: Type of function, which can be one of three:\nssd: Signalstrength for distance to AP\nvmamodel: relate different values of K to median accuracy for model\nvmafinger: relate different values of K to median accuracy for fingerprinting");
+    			System.out.println("This program takes one parameter: Type of function, which can be one of three:\nssd: Signalstrength for distance to AP\nvmamodel: relate different values of K to median accuracy for model and create Cumulative Error Function\nvmafinger: relate different values of K to median accuracy for fingerprinting  and create Cumulative Error Function");
     		}
     	}
     	catch (ArrayIndexOutOfBoundsException e){
-    			System.out.println("This program takes one parameter: Type of function, which can be one of three:\nssd: Signalstrength for distance to AP\nvmamodel: relate different values of K to median accuracy for model\nvmafinger: relate different values of K to median accuracy for fingerprinting");
+    			System.out.println("This program takes one parameter: Type of function, which can be one of three:\nssd: Signalstrength for distance to AP\nvmamodel: relate different values of K to median accuracy for model  and create Cumulative Error Function\nvmafinger: relate different values of K to median accuracy for fingerprinting  and create Cumulative Error Function");
     	}
     }
 
     public String signalStrengthForDistance(){
-    	//TODO implement modelKNN algorithm and return results in a string
     	ModelKNN mKNN = new ModelKNN(1);
 		int offlineSize = 25;
 		int onlineSize = 5;
